@@ -1,15 +1,21 @@
 import React, { Component } from "react";
+
 import _ from "lodash";
 
 class TableBody extends Component {
   // remember that column.content is a function reference
   // here we check to see if column.content exists, if it does return the function
   //passing item, which is the movie
+  // column has properties such as path and label
 
   renderCell = (item, column) => {
     if (column.content) return column.content(item);
 
-    return _.get(item, column);
+    return _.get(item, column.path);
+  };
+
+  createkey = (item, column) => {
+    return item._id + (column.path || column.key);
   };
 
   render() {
@@ -17,9 +23,11 @@ class TableBody extends Component {
     return (
       <tbody>
         {data.map(item => (
-          <tr>
+          <tr key={item._id}>
             {columns.map(column => (
-              <td>{this.renderCell(item, column)}</td>
+              <td key={this.createkey(item, column)}>
+                {this.renderCell(item, column)}
+              </td>
             ))}
           </tr>
         ))}
